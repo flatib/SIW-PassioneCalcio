@@ -1,0 +1,291 @@
+:root {
+  --ui-text: #1f2937;
+  --ui-muted: #6b7280;
+  --ui-primary: #0f766e;
+  --ui-primary-dark: #115e59;
+  --ui-border: #dbe3ee;
+  --ui-surface: #f8f9fa;
+  --ui-danger: #b42318;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--ui-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+.react-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.react-toolbar {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  background-color: var(--ui-surface);
+}
+
+.react-toolbar-title {
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ui-text);
+}
+
+.react-toolbar-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.react-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+}
+
+.react-input,
+.react-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+.react-input:focus,
+.react-select:focus {
+  outline: none;
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.react-button-secondary {
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.react-button-secondary:hover {
+  background-color: #f1f3f5;
+  border-color: #bdbdbd;
+}
+
+.react-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.react-card-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.react-card {
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.react-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.react-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.react-card-body {
+  padding: 16px;
+}
+
+.react-card-title {
+  margin: 0 0 8px 0;
+  color: #222;
+}
+
+.react-card-text {
+  margin: 0;
+  color: #555;
+}
+
+.error-text {
+  color: var(--ui-danger);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .react-page-container {
+    padding: 20px 14px;
+  }
+
+  .react-toolbar-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .react-button-secondary {
+    width: 100%;
+  }
+}
+
+.react-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.react-page-title {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--ui-text, #1f2937);
+}
+
+.react-page-subtitle {
+  margin: 6px 0 0;
+  color: var(--ui-muted, #6b7280);
+}
+
+.react-button-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 10px;
+  background: var(--ui-primary, #0f766e);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.react-button-primary:hover {
+  background: var(--ui-primary-dark, #115e59);
+}
+
+@media (max-width: 768px) {
+  .react-page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .react-button-primary {
+    width: 100%;
+  }
+}
+
+.react-toolbar-grid--teams {
+  grid-template-columns: 2fr 1fr 1fr auto;
+}
+
+.react-toolbar-grid--players {
+  grid-template-columns: 2fr 1fr auto;
+}
+
+.react-list-section {
+  margin-top: 12px;
+}
+
+.react-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--ui-muted, #6b7280);
+  font-weight: 600;
+}
+
+.react-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.react-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.react-table th,
+.react-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.react-table th {
+  background: #f8fafc;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.react-table td {
+  color: #374151;
+}
+
+.react-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.react-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.react-toolbar-grid--matches {
+  grid-template-columns: 2fr 1fr 1fr auto;
+}
+
+.react-button-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 10px;
+  background: #b91c1c;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.react-button-danger:hover {
+  background: #991b1b;
+}
+
+@media (max-width: 768px) {
+  .react-toolbar-grid--matches {
+    grid-template-columns: 1fr;
+  }
+}
