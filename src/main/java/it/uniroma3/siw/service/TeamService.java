@@ -118,28 +118,31 @@ public class TeamService {
 	
 	// --- METODI PER ANALISI PRESTAZIONALE N+1 ---
 
+	// usa lazy loading, una per ogni squadra per caricare i giocatori
 	@Transactional(readOnly = true)
     public long unoptimizedFetch() {
         long start = System.currentTimeMillis();
-        
+        System.out.println("--- INIZIO FETCH NON OTTIMIZZATO (N+1) ---");
         List<Team> teams = (List<Team>) teamRepository.findAll();
         for (Team team : teams) {
-            int playersCount = team.getPlayers().size(); 
+            int playersCount = team.getPlayers().size();
+            System.out.println("Squadra: " + team.getName() + " ha " + playersCount + " giocatori.");
         }
-        
+        System.out.println("--- FINE FETCH NON OTTIMIZZATO ---");
         long end = System.currentTimeMillis();
         return end - start;
     }
-
+	// usa join fetch -> 1 query -> giocatori già in memoria
     @Transactional(readOnly = true)
     public long optimizedFetch() {
         long start = System.currentTimeMillis();
-        
+        System.out.println("--- INIZIO FETCH OTTIMIZZATO (JOIN FETCH) ---");
         List<Team> teams = teamRepository.findAllWithPlayers();
         for (Team team : teams) {
             int playersCount = team.getPlayers().size();
+            System.out.println("Squadra: " + team.getName() + " ha " + playersCount + " giocatori.");
         }
-        
+        System.out.println("--- FINE FETCH OTTIMIZZATO ---");
         long end = System.currentTimeMillis();
         return end - start;
     }
