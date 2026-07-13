@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<meta charset="UTF-8">
+	<title th:text="${team.name} + ' - Dettaglio Squadra'">Dettaglio Squadra</title>
+	<link rel="stylesheet" th:href="@{/css/style.css}" href="../static/css/style.css">
+</head>
+
+<body>
+
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<header class="container">
+	    <h1 th:text="${team.name}">Nome Squadra</h1>
+
+	    <div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+	        <a class="btn" th:href="@{/admin/teams/{id}/manage(id=${team.id})}">
+	            Gestisci squadra
+	        </a>
+	    </div>
+	</header>
+
+	<hr>
+
+	<section class="team-info">
+		<h2>Informazioni squadra</h2>
+		<table>
+			<tr>
+				<th>Nome</th>
+				<td th:text="${team.name}">Nome</td>
+			</tr>
+			<tr>
+				<th>Anno di fondazione</th>
+				<td th:text="${team.foundationYear}">Anno</td>
+			</tr>
+			<tr>
+				<th>Città</th>
+				<td th:text="${team.city}">Città</td>
+			</tr>
+		</table>
+	</section>
+
+	<hr>
+
+	<section class="team-tournaments">
+		<h2>Tornei a cui partecipa</h2>
+		<ul class="clean-list" th:if="${team.tournaments != null and !team.tournaments.isEmpty()}">
+		    <li th:each="tournament : ${team.tournaments}">
+		        <a th:href="@{/tournaments/{id}(id=${tournament.id})}"
+		           th:text="${tournament.name + ' (' + tournament.year + ')'}">
+		            Nome Torneo (Anno)
+		        </a>
+		    </li>
+		</ul>
+		<p th:if="${team.tournaments == null or team.tournaments.isEmpty()}">
+			La squadra non è iscritta a nessun torneo.
+		</p>
+	</section>
+
+	<hr>
+
+	<!-- Partite della squadra -->
+	<section class="team-matches">
+	    <h2>Partite</h2>
+
+	    <div class="schedule" th:if="${matchesByDate != null and !matchesByDate.isEmpty()}">
+	        <section class="schedule-day" th:each="entry : ${matchesByDate}">
+	            <div class="schedule-date"
+	                 th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}">
+	                15/07/2026
+	            </div>
+
+	            <div class="schedule-matches">
+	                <div th:each="match : ${entry.value}">
+	                    <div class="match-tournament" th:text="${match.tournament.name}">
+	                        Nome Torneo
+	                    </div>
+
+	                    <a th:href="@{/matches/{id}(id=${match.id})}" class="match-link">
+	                        <div class="match-row">
+	                            <div class="home-team" th:text="${match.homeTeam.name}">
+	                                Squadra Casa
+	                            </div>
+
+	                            <div class="match-center"
+	                                 th:classappend="${match.status != null and match.status.name() == 'PLAYED'} ? ' played' : ' scheduled'">
+	                                <span th:if="${match.status != null and match.status.name() == 'PLAYED'}"
+	                                      th:text="${match.goalsHome + ' - ' + match.goalsAway}">
+	                                    2 - 1
+	                                </span>
+	                                <span th:unless="${match.status != null and match.status.name() == 'PLAYED'}"
+	                                      th:text="${#temporals.format(match.dateAndTime, 'HH:mm')}">
+	                                    18:00
+	                                </span>
+	                            </div>
+
+	                            <div class="away-team" th:text="${match.awayTeam.name}">
+	                                Squadra Trasferta
+	                            </div>
+	                        </div>
+	                    </a>
+	                </div>
+	            </div>
+	        </section>
+	    </div>
+
+	    <p class="schedule-empty" th:if="${matchesByDate == null or matchesByDate.isEmpty()}">
+	        Nessuna partita in programma o disputata.
+	    </p>
+	</section>
+	    </div>
+
+	    <p class="schedule-empty" th:if="${matchesByDate == null or matchesByDate.isEmpty()}">
+	        Nessuna partita in programma o disputata.
+	    </p>
+	</section>
+
+	<hr>
+
+	<section class="team-players">
+	    <h2>Giocatori tesserati</h2>
+
+	    <div class="table-wrapper" th:if="${team.players != null and !team.players.isEmpty()}">
+	        <table class="players-table">
+	            <thead>
+	                <tr>
+	                    <th>Nome</th>
+	                    <th>Cognome</th>
+	                    <th>Data di nascita</th>
+	                    <th>Ruolo</th>
+	                    <th>Altezza</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                <tr th:each="player : ${team.players}">
+	                    <td th:text="${player.name}">Nome</td>
+	                    <td th:text="${player.surname}">Cognome</td>
+	                    <td th:text="${player.dateOfBirth}">Data di nascita</td>
+	                    <td>
+	                        <span class="role-badge" th:text="${player.role}">Ruolo</span>
+	                    </td>
+	                    <td th:text="${player.height}">Altezza</td>
+	                </tr>
+	            </tbody>
+	        </table>
+	    </div>
+
+	    <p th:if="${team.players == null or team.players.isEmpty()}">
+	        La squadra non ha ancora giocatori tesserati.
+	    </p>
+	</section>
+
+</body>
+
+</html>

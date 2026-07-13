@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	    <meta charset="UTF-8">
+    <title>Errore 403 - Operazione non autorizzata</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div>
+        <h2>Operazione non autorizzata</h2>
+        <p th:text="${errorMessage}">Messaggio di errore.</p>
+        <a th:href="@{/}">Torna alla home</a>
+    </div>
+</body>
+</html>

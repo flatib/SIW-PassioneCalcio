@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettaglio Partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <section>
+            <p th:text="${match.tournament.name + ' - ' + #temporals.format(match.dateAndTime, 'dd/MM/yyyy HH:mm')}">
+                Torneo e data
+            </p>
+
+            <h1>
+                <span th:text="${match.homeTeam.name}">Casa</span>
+                -
+                <span th:text="${match.awayTeam.name}">Trasferta</span>
+            </h1>
+
+            <div class="match-center"
+                 th:classappend="${match.status != null and match.status.name() == 'PLAYED'} ? ' played' : ' scheduled'">
+                <span th:if="${match.status != null and match.status.name() == 'PLAYED'}"
+                      th:text="${match.goalsHome + ' - ' + match.goalsAway}">0 - 0</span>
+                <span th:unless="${match.status != null and match.status.name() == 'PLAYED'}">Da disputare</span>
+            </div>
+
+            <div class="inline-actions match-admin-actions" sec:authorize="hasAuthority('ADMIN')">
+                <a class="btn"
+                   th:href="@{/admin/matches/{id}/result(id=${match.id})}"
+                   th:text="${match.status != null and match.status.name() == 'PLAYED'} ? 'Modifica risultato' : 'Imposta risultato'">
+                    Imposta risultato
+                </a>
+            </div>
+
+            <p th:text="${'Luogo: ' + match.place}">Stadio</p>
+        </section>
+
+        <hr>
+
+        <section sec:authorize="isAuthenticated()">
+            <h2>Commenti (<span th:text="${#lists.size(match.comments)}">0</span>)</h2>
+
+            <div th:if="${not #lists.isEmpty(match.comments)}">
+                <div class="comment-box" th:each="comment : ${match.comments}">
+                    <div class="comment-meta">
+                        <span th:text="${comment.author.username}">Username</span>
+                    </div>
+
+                    <div class="comment-text" th:text="${comment.text}">Testo commento</div>
+
+                    <div class="inline-actions"
+                         sec:authorize="isAuthenticated()"
+                         th:if="${#authentication.name == comment.author.username}">
+                        <a th:href="@{/comments/{id}/edit(id=${comment.id})}">Modifica il tuo commento</a>
+                    </div>
+                </div>
+            </div>
+
+            <p th:if="${#lists.isEmpty(match.comments)}">Nessun commento ancora presente. Sii il primo.</p>
+        </section>
+
+        <hr>
+
+        <section sec:authorize="isAuthenticated()">
+            <h3>Lascia un commento</h3>
+            <form th:action="@{/matches/{id}/comments(id=${match.id})}" method="post">
+                <div class="form-group">
+                    <label for="text">Commento</label>
+                    <textarea id="text" name="text" required placeholder="Scrivi cosa pensi di questa partita..."></textarea>
+                </div>
+                <button type="submit" class="btn">Pubblica commento</button>
+            </form>
+        </section>
+
+        <section sec:authorize="isAnonymous()">
+            <p>Devi essere registrato per poter visualizzare commentare.</p>
+            <div class="inline-actions">
+                <a th:href="@{/login}" class="btn">Accedi</a>
+                <a th:href="@{/register}" class="btn">Registrati</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

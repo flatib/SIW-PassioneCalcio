@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${formMode != null and formMode == 'edit'} ? 'Modifica Squadra' : 'Aggiungi Nuova Squadra'">
+        Aggiungi Nuova Squadra
+    </title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <div class="container" style="margin-top: 30px;">
+        <div class="form-container">
+            <h2 th:text="${formMode != null and formMode == 'edit'} ? 'Modifica Squadra' : 'Inserisci Nuova Squadra'">
+                Inserisci Nuova Squadra
+            </h2>
+
+            <form th:object="${team}"
+                  th:action="${formMode != null and formMode == 'edit'} ? @{/admin/teams/{id}(id=${team.id})} : @{/admin/teams}"
+                  method="post">
+
+                <div th:if="${#fields.hasGlobalErrors()}">
+                    <p class="error"
+                       th:each="err : ${#fields.globalErrors()}"
+                       th:text="${err}">
+                        Errore globale
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Nome Squadra:</label>
+                    <input id="name" type="text" th:field="*{name}" placeholder="Es: AS Roma Nord" />
+                    <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Errore</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="foundationYear">Anno di Fondazione:</label>
+                    <input id="foundationYear" type="number" th:field="*{foundationYear}" placeholder="Es: 2015" />
+                    <span class="error" th:if="${#fields.hasErrors('foundationYear')}" th:errors="*{foundationYear}">Errore</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">Città:</label>
+                    <input id="city" type="text" th:field="*{city}" placeholder="Es: Roma" />
+                    <span class="error" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">Errore</span>
+                </div>
+
+                <div class="inline-actions">
+                    <button type="submit" class="btn"
+                            th:text="${formMode != null and formMode == 'edit'} ? 'Salva modifiche' : 'Salva squadra'">
+                        Salva squadra
+                    </button>
+
+                    <a class="btn"
+                       th:href="${formMode != null and formMode == 'edit'} ? @{/admin/teams/{id}/manage(id=${team.id})} : @{/admin/teams}">
+                        Annulla
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

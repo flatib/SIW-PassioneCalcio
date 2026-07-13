@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Passione Calcio</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <h1>Benvenuto su Passione Calcio!</h1>
+        <p>Il sito dedicato agli appassionati di calcio.</p>
+        <div class="inline-actions">
+            <a th:href="@{/tournaments}" class="btn">Vai ai tornei in corso</a>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Gestione squadra - ' + ${team.name}">Gestione squadra</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1 th:text="'Gestione squadra: ' + ${team.name}">Gestione squadra</h1>
+            <div class="inline-actions">
+                <a class="btn" th:href="@{/admin/teams/{id}/edit(id=${team.id})}">
+                    Modifica informazioni
+                </a>
+                <a class="btn" th:href="@{/teams/{id}(id=${team.id})}">
+                    Torna al dettaglio
+                </a>
+            </div>
+        </header>
+
+        <hr>
+
+        <section class="team-info">
+            <h2>Informazioni squadra</h2>
+            <table>
+                <tr>
+                    <th>Nome</th>
+                    <td th:text="${team.name}">Nome</td>
+                </tr>
+                <tr>
+                    <th>Anno di fondazione</th>
+                    <td th:text="${team.foundationYear}">Anno</td>
+                </tr>
+                <tr>
+                    <th>Città</th>
+                    <td th:text="${team.city}">Città</td>
+                </tr>
+            </table>
+        </section>
+
+        <hr>
+
+        <section class="team-players">
+            <h2>Giocatori tesserati</h2>
+
+            <div class="inline-actions">
+                <a class="btn" th:href="@{/admin/players/new(teamId=${team.id})}">
+                    Aggiungi giocatore
+                </a>
+            </div>
+
+            <table th:if="${team.players != null and !team.players.isEmpty()}">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cognome</th>
+                        <th>Ruolo</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="player : ${team.players}">
+                        <td th:text="${player.name}">Nome</td>
+                        <td th:text="${player.surname}">Cognome</td>
+                        <td th:text="${player.role}">Ruolo</td>
+                        <td>
+                            <div class="inline-actions">
+                                <a class="btn" th:href="@{/admin/players/{id}/edit(id=${player.id})}">
+                                    Modifica
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p th:if="${team.players == null or team.players.isEmpty()}">
+                La squadra non ha ancora giocatori tesserati.
+            </p>
+        </section>
+
+        <hr>
+
+		<section class="team-tournaments">
+		    <h2>Tornei a cui partecipa</h2>
+
+			<div class="inline-actions" th:if="${availableTournaments != null and !availableTournaments.isEmpty()}">
+			    <form th:action="@{/admin/teams/{id}/tournaments(id=${team.id})}" method="post">
+			        <div class="form-group">
+			            <label for="tournamentId">Iscrivi la squadra a un torneo</label>
+			            <select id="tournamentId" name="tournamentId" required>
+			                <option value="">Seleziona un torneo</option>
+			                <option th:each="tournament : ${availableTournaments}"
+			                        th:value="${tournament.id}"
+			                        th:text="${tournament.name + ' (' + tournament.year + ')'}">
+			                    Nome Torneo
+			                </option>
+			            </select>
+			        </div>
+			        <button type="submit" class="btn">Iscrivi al torneo</button>
+			    </form>
+			</div>
+
+			<p th:if="${availableTournaments == null or availableTournaments.isEmpty()}">
+			    La squadra è già iscritta a tutti i tornei disponibili.
+			</p>
+
+		    <ul class="clean-list" th:if="${team.tournaments != null and !team.tournaments.isEmpty()}">
+		        <li th:each="tournament : ${team.tournaments}">
+		            <div class="list-row-actions">
+		                <a th:href="@{/tournaments/{id}(id=${tournament.id})}"
+		                   th:text="${tournament.name + ' (' + tournament.year + ')'}">
+		                    Nome Torneo
+		                </a>
+
+		                <form th:action="@{/admin/teams/{id}/tournaments/{tournamentId}/remove(id=${team.id}, tournamentId=${tournament.id})}"
+		                      method="post">
+		                    <button type="submit" class="btn btn-danger">
+		                        Disiscrivi
+		                    </button>
+		                </form>
+		            </div>
+		        </li>
+		    </ul>
+
+		    <p th:if="${team.tournaments == null or team.tournaments.isEmpty()}">
+		        La squadra non è iscritta a nessun torneo.
+		    </p>
+		</section>
+    </main>
+
+</body>
+</html>

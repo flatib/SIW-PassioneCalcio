@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registra nuova partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <h1>Registra nuova partita</h1>
+
+        <form th:action="@{/admin/matches}" th:object="${match}" method="post" class="form-card">
+
+            <div th:if="${#fields.hasGlobalErrors()}" class="form-error-box">
+                <p class="error-text"
+                   th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}">
+                    Messaggio di errore
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="tournamentId">Torneo</label>
+                <select id="tournamentId" name="tournamentId" required>
+                    <option value="">-- Seleziona torneo --</option>
+                    <option th:each="tournament : ${tournaments}"
+                            th:value="${tournament.id}"
+                            th:text="${tournament.name + ' (' + tournament.year + ')'}"
+                            th:selected="${selectedTournamentId != null and selectedTournamentId == tournament.id}">
+                        Torneo
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="homeTeamId">Squadra in casa</label>
+                <select id="homeTeamId" name="homeTeamId" required disabled>
+                    <option value="">-- Seleziona prima un torneo --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="awayTeamId">Squadra in trasferta</label>
+                <select id="awayTeamId" name="awayTeamId" required disabled>
+                    <option value="">-- Seleziona prima un torneo --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dateAndTime">Data e ora</label>
+                <input id="dateAndTime" type="datetime-local" th:field="*{dateAndTime}" required>
+                <small class="error"
+                       th:if="${#fields.hasErrors('dateAndTime')}"
+                       th:errors="*{dateAndTime}">
+                    Errore
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="place">Luogo</label>
+                <input id="place" type="text" th:field="*{place}" placeholder="Es: Stadio Olimpico" required>
+                <small class="error"
+                       th:if="${#fields.hasErrors('place')}"
+                       th:errors="*{place}">
+                    Errore
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="refereeId">Arbitro</label>
+                <select id="refereeId" name="refereeId" required>
+                    <option value="">-- Seleziona arbitro --</option>
+                    <option th:each="referee : ${referees}"
+                            th:value="${referee.id}"
+                            th:text="${referee.name + ' ' + referee.surname}"
+                            th:selected="${selectedRefereeId != null and selectedRefereeId == referee.id}">
+                        Arbitro
+                    </option>
+                </select>
+            </div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn">Salva partita</button>
+                <a th:href="@{/admin/matches}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </main>
+
+    <script th:inline="javascript">
+        const tournamentSelect = document.getElementById('tournamentId');
+        const homeTeamSelect = document.getElementById('homeTeamId');
+        const awayTeamSelect = document.getElementById('awayTeamId');
+
+        const selectedHomeTeamId = /*[[${selectedHomeTeamId}]]*/ null;
+        const selectedAwayTeamId = /*[[${selectedAwayTeamId}]]*/ null;
+
+        let currentTeams = [];
+
+        function resetTeamSelect(select, placeholder) {
+            select.innerHTML = '';
+
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = placeholder;
+            select.appendChild(option);
+        }
+
+        function populateTeamSelect(select, teams, placeholder, excludedId = null, selectedId = null) {
+            resetTeamSelect(select, placeholder);
+
+            const filteredTeams = teams.filter(team => String(team.id) !== String(excludedId));
+
+            filteredTeams.forEach(team => {
+                const option = document.createElement('option');
+                option.value = team.id;
+                option.textContent = team.name;
+
+                if (selectedId != null && String(team.id) === String(selectedId)) {
+                    option.selected = true;
+                }
+
+                select.appendChild(option);
+            });
+
+            select.disabled = filteredTeams.length === 0;
+        }
+
+        function refreshTeamSelects(homeSelected = null, awaySelected = null) {
+            const currentHome = homeSelected !== null ? homeSelected : homeTeamSelect.value;
+            const currentAway = awaySelected !== null ? awaySelected : awayTeamSelect.value;
+
+            populateTeamSelect(
+                homeTeamSelect,
+                currentTeams,
+                '-- Seleziona squadra --',
+                currentAway,
+                currentHome
+            );
+
+            populateTeamSelect(
+                awayTeamSelect,
+                currentTeams,
+                '-- Seleziona squadra --',
+                currentHome,
+                currentAway
+            );
+        }
+
+        async function loadTeamsByTournament(tournamentId) {
+            const response = await fetch(`/admin/api/tournaments/${tournamentId}/teams`);
+
+            if (!response.ok) {
+                throw new Error('Errore nel caricamento squadre');
+            }
+
+            return await response.json();
+        }
+
+        async function initializeTeamSelects() {
+            const tournamentId = tournamentSelect.value;
+
+            if (!tournamentId) {
+                currentTeams = [];
+                resetTeamSelect(homeTeamSelect, '-- Seleziona prima un torneo --');
+                resetTeamSelect(awayTeamSelect, '-- Seleziona prima un torneo --');
+                homeTeamSelect.disabled = true;
+                awayTeamSelect.disabled = true;
+                return;
+            }
+
+            try {
+                currentTeams = await loadTeamsByTournament(tournamentId);
+                refreshTeamSelects(selectedHomeTeamId, selectedAwayTeamId);
+            } catch (error) {
+                currentTeams = [];
+                resetTeamSelect(homeTeamSelect, '-- Errore caricamento squadre --');
+                resetTeamSelect(awayTeamSelect, '-- Errore caricamento squadre --');
+                homeTeamSelect.disabled = true;
+                awayTeamSelect.disabled = true;
+            }
+        }
+
+        tournamentSelect.addEventListener('change', async function () {
+            const tournamentId = this.value;
+
+            if (!tournamentId) {
+                currentTeams = [];
+                resetTeamSelect(homeTeamSelect, '-- Seleziona prima un torneo --');
+                resetTeamSelect(awayTeamSelect, '-- Seleziona prima un torneo --');
+                homeTeamSelect.disabled = true;
+                awayTeamSelect.disabled = true;
+                return;
+            }
+
+            try {
+                currentTeams = await loadTeamsByTournament(tournamentId);
+                refreshTeamSelects(null, null);
+            } catch (error) {
+                currentTeams = [];
+                resetTeamSelect(homeTeamSelect, '-- Errore caricamento squadre --');
+                resetTeamSelect(awayTeamSelect, '-- Errore caricamento squadre --');
+                homeTeamSelect.disabled = true;
+                awayTeamSelect.disabled = true;
+            }
+        });
+
+        homeTeamSelect.addEventListener('change', function () {
+            refreshTeamSelects();
+        });
+
+        awayTeamSelect.addEventListener('change', function () {
+            refreshTeamSelects();
+        });
+
+        initializeTeamSelects();
+    </script>
+</body>
+</html>

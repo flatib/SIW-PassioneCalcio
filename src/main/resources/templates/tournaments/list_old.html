@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tornei</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Elenco Tornei</h1>
+        </header>
+
+        <div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+            <a th:href="@{/admin/tournaments/new}" class="btn">+ Crea Nuovo Torneo</a>
+        </div>
+
+        <ul class="clean-list" th:if="${tournaments != null and !tournaments.isEmpty()}">
+            <li th:each="tournament : ${tournaments}">
+                <a th:href="@{/tournaments/{id}(id=${tournament.id})}"
+                   th:text="${tournament.name}">
+                    Nome Torneo
+                </a>
+                -
+                Anno: <span th:text="${tournament.year}">2026</span>
+            </li>
+        </ul>
+
+        <p th:if="${tournaments == null or tournaments.isEmpty()}">
+            Nessun torneo disponibile.
+        </p>
+    </main>
+</body>
+</html>

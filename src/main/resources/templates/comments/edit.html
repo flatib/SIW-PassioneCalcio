@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifica commento</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <h1>Modifica il tuo commento</h1>
+
+        <p th:if="${errorMessage}" class="error" th:text="${errorMessage}">Errore</p>
+
+        <form th:action="@{/comments/{id}/edit(id=${comment.id})}" method="post">
+            <div class="form-group">
+                <label for="text">Commento</label>
+                <textarea id="text" name="text" required th:text="${comment.text}"></textarea>
+            </div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn">Salva modifiche</button>
+                <a class="btn" th:href="@{/matches/{id}(id=${comment.match.id})}">Annulla</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

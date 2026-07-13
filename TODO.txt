@@ -1,0 +1,2 @@
+- mediaport per visualizzare il sito su mobile
+- modifica informazioni in squadra non funziona

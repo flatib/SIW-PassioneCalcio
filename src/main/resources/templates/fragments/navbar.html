@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:fragment="main-nav" class="main-nav">
+        
+        <div class="nav-left">
+            <a th:href="@{/}" class="brand-link">⚽ PassioneCalcio</a>
+
+            <div class="nav-links">
+                <a th:href="@{/tournaments}" class="nav-link">Tornei</a>
+                <a th:href="@{/teams}" class="nav-link">Squadre</a>
+                <a th:href="@{/players}" class="nav-link">Giocatori</a>
+                <a th:href="@{/matches}" class="nav-link">Partite</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <span sec:authorize="!isAuthenticated()" class="nav-auth-guest">
+                <a th:href="@{/login}" class="nav-login">Accedi</a>
+                <a th:href="@{/register}" class="nav-register">Registrati</a>
+            </span>
+
+            <span sec:authorize="isAuthenticated()" class="nav-auth-user">
+                <span class="nav-welcome">
+                    Benvenuto, <strong sec:authentication="name">Utente</strong>
+                    <span sec:authorize="hasAuthority('ADMIN')" class="admin-badge">ADMIN</span>
+                </span>
+
+                <form th:action="@{/logout}" method="post" class="nav-logout-form">
+                    <button type="submit" class="nav-logout-btn">Logout</button>
+                </form>
+            </span>
+        </div>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,656 @@
+/* --- CALENDARIO PARTITE --- */
+.schedule {
+    margin-top: 18px;
+}
+
+.schedule-day {
+    margin-bottom: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+}
+
+.schedule-date {
+    background-color: #0f766e;
+    color: #ffffff;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.schedule-matches {
+    padding: 8px 12px;
+}
+
+.schedule-matches > * + * {
+    border-top: 1px solid #e2e8f0;
+}
+
+.match-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.match-link:hover {
+    text-decoration: none;
+}
+
+.match-entry {
+    padding: 4px 0 10px 0;
+}
+
+.match-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 8px;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    transition: background-color 0.2s ease;
+}
+
+.match-link:hover .match-row {
+    background-color: #f1f5f9;
+}
+
+.home-team,
+.away-team {
+    flex: 1 1 0;
+    min-width: 0;
+    font-weight: 600;
+    color: #1e293b;
+    word-break: break-word;
+}
+
+.home-team {
+    text-align: right;
+}
+
+.away-team {
+    text-align: left;
+}
+
+.match-center {
+    flex: 0 0 90px;
+    margin: 0 10px;
+    text-align: center;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 999px;
+    background-color: #e2e8f0;
+    color: #0f172a;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.match-center.played {
+    background-color: #ccfbf1;
+    color: #115e59;
+}
+
+.match-center.scheduled {
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+.match-tournament {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 4px 0 2px 0;
+    padding: 6px 8px 0 8px;
+    font-weight: 600;
+}
+
+.schedule-empty {
+    padding: 14px 16px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* --- HEADER PAGINA --- */
+.page-header p {
+    margin-top: 6px;
+    color: #64748b;
+}
+
+/* --- WRAPPER TABELLE --- */
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+.table-wrapper table {
+    margin-top: 0;
+    border-collapse: collapse;
+}
+
+/* --- TABELLA INFO SQUADRA --- */
+.team-info table {
+    margin-top: 10px;
+}
+
+.team-info th,
+.team-info td {
+    text-align: left;
+}
+
+.team-info th {
+    width: 32%;
+    background-color: #f8fafc;
+    color: #475569;
+}
+
+.team-info td {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* --- TABELLA GIOCATORI --- */
+.players-table {
+    min-width: 720px;
+}
+
+.players-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.players-table tbody td {
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.players-table tbody tr:nth-child(even) {
+    background-color: #fcfdfd;
+}
+
+.players-table tbody tr:hover {
+    background-color: #f0fdfa;
+}
+
+.players-table td:nth-child(1),
+.players-table td:nth-child(2) {
+    font-weight: 600;
+}
+
+.players-table td:nth-child(3) {
+    color: #475569;
+    white-space: nowrap;
+}
+
+.players-table td:nth-child(5) {
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background-color: #ccfbf1;
+    color: #115e59;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* --- LISTA SQUADRE TORNEO --- */
+.team-list li {
+    padding: 0;
+}
+
+.team-list-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.team-list-link:hover {
+    text-decoration: none;
+}
+
+.team-list-name {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.team-list-city {
+    color: #64748b;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+/* --- CLASSIFICA TORNEO --- */
+.standings-table {
+    min-width: 760px;
+}
+
+.standings-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.standings-table tbody td {
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.standings-table tbody tr:nth-child(even) {
+    background-color: #fcfdfd;
+}
+
+.standings-table tbody tr:hover {
+    background-color: #f0fdfa;
+}
+
+.standing-pos {
+    font-weight: 700;
+    color: #0f766e;
+}
+
+.standing-team {
+    text-align: left;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.standing-points {
+    font-weight: 700;
+    color: #115e59;
+}
+
+.standings-table tbody tr:nth-child(-n+3) .standing-pos {
+    color: #0f766e;
+}
+
+/* --- NAVBAR --- */
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 30px;
+    background-color: #0f766e;
+    color: #ffffff;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    flex-wrap: wrap;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.brand-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.brand-link:hover {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 0;
+}
+
+.nav-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-auth-guest,
+.nav-auth-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.nav-login {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+}
+
+.nav-login:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.nav-register {
+    color: #0f766e;
+    background-color: #ffffff;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+.nav-register:hover {
+    background-color: #f1f5f9;
+    color: #0f766e;
+    text-decoration: none;
+}
+
+.nav-welcome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: #ffffff;
+}
+
+.admin-badge {
+    background-color: #991b1b;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.nav-logout-form {
+    margin: 0;
+}
+
+.nav-logout-btn {
+    background-color: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.nav-logout-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 700px) {
+    .container {
+        margin: 16px;
+        padding: 16px;
+    }
+
+    .match-row {
+        gap: 8px;
+        padding: 12px 6px;
+    }
+
+    .home-team,
+    .away-team {
+        font-size: 0.95rem;
+    }
+
+    .match-center {
+        flex: 0 0 84px;
+        margin: 0 6px;
+        font-size: 0.85rem;
+        padding: 7px 8px;
+    }
+
+    .match-tournament {
+        font-size: 0.82rem;
+    }
+
+    .table-wrapper {
+        border-radius: 8px;
+    }
+
+    .players-table {
+        min-width: 640px;
+    }
+
+    .players-table th,
+    .players-table td,
+    .standings-table th,
+    .standings-table td {
+        padding: 10px;
+        font-size: 0.92rem;
+    }
+
+    .role-badge {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+    }
+
+    .team-list-link {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 10px 0;
+    }
+
+    .team-list-city {
+        white-space: normal;
+        font-size: 0.9rem;
+    }
+
+    .standings-table {
+        min-width: 700px;
+    }
+
+    .main-nav {
+        padding: 14px 16px;
+        align-items: flex-start;
+    }
+
+    .nav-left,
+    .nav-right {
+        width: 100%;
+    }
+
+    .nav-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .nav-links {
+        gap: 14px;
+    }
+
+    .nav-auth-user,
+    .nav-auth-guest {
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .match-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .home-team,
+    .away-team,
+    .match-center {
+        text-align: center;
+    }
+
+    .match-center {
+        justify-self: center;
+        width: 110px;
+        margin: 0;
+    }
+
+    .match-tournament {
+        text-align: center;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .nav-auth-user,
+    .nav-auth-guest {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+/* --- TABELLA SQUADRE --- */
+.teams-table {
+    min-width: 700px;
+}
+
+.teams-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.teams-table tbody td {
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.teams-table tbody tr:nth-child(even) {
+    background-color: #fcfdfd;
+}
+
+.teams-table tbody tr:hover {
+    background-color: #f0fdfa;
+}
+
+.team-name-cell {
+    text-align: left;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+@media (max-width: 700px) {
+    .teams-table {
+        min-width: 620px;
+    }
+
+    .teams-table th,
+    .teams-table td {
+        padding: 10px;
+        font-size: 0.92rem;
+    }
+}
+
+.list-row-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.form-error-box {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border: 1px solid #dc2626;
+    border-radius: 8px;
+    background-color: #fef2f2;
+}
+
+.error-text {
+    margin: 0;
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+.match-admin-actions {
+    margin-top: 8px;
+    padding: 0 8px 4px 8px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 520px) {
+    .match-admin-actions {
+        justify-content: center;
+        padding: 4px 0 0 0;
+    }
+}
+
+.inline-form {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Aggiungi al tuo style.css */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.card-item {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    transition: transform 0.2s;
+    cursor: pointer;
+    background: white;
+}
+
+.card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}

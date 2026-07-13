@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposta risultato partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <section class="page-header">
+            <h1 th:text="${match.status != null and match.status.name() == 'PLAYED'} ? 'Modifica risultato' : 'Imposta risultato'">
+                Imposta risultato
+            </h1>
+
+            <div class="inline-actions">
+                <a class="btn" th:href="@{/matches/{id}(id=${match.id})}">
+                    Torna al dettaglio
+                </a>
+            </div>
+        </section>
+
+        <section class="card">
+            <p th:text="${match.tournament.name + ' - ' + #temporals.format(match.dateAndTime, 'dd/MM/yyyy HH:mm')}">
+                Torneo e data
+            </p>
+
+            <h2>
+                <span th:text="${match.homeTeam.name}">Casa</span>
+                -
+                <span th:text="${match.awayTeam.name}">Trasferta</span>
+            </h2>
+
+            <p th:text="${'Luogo: ' + match.place}">Luogo</p>
+
+            <p th:if="${match.status != null and match.status.name() == 'PLAYED'}">
+                Risultato attuale:
+                <strong th:text="${match.goalsHome + ' - ' + match.goalsAway}">0 - 0</strong>
+            </p>
+
+            <p th:unless="${match.status != null and match.status.name() == 'PLAYED'}">
+                La partita non ha ancora un risultato registrato.
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Risultato</h2>
+
+            <div class="form-error-box" th:if="${resultError != null}">
+                <p class="error-text" th:text="${resultError}">Messaggio di errore</p>
+            </div>
+
+            <form th:action="@{/admin/matches/{id}/result(id=${match.id})}" method="post" class="form-card">
+                <div class="form-row two-columns">
+                    <div class="form-group">
+                        <label for="goalsHome" th:text="${match.homeTeam.name + ' gol'}">Gol casa</label>
+                        <input id="goalsHome"
+                               name="goalsHome"
+                               type="number"
+                               min="0"
+                               required
+                               th:value="${match.goalsHome}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="goalsAway" th:text="${match.awayTeam.name + ' gol'}">Gol trasferta</label>
+                        <input id="goalsAway"
+                               name="goalsAway"
+                               type="number"
+                               min="0"
+                               required
+                               th:value="${match.goalsAway}">
+                    </div>
+                </div>
+
+                <div class="inline-actions">
+                    <button type="submit" class="btn"
+                            th:text="${match.status != null and match.status.name() == 'PLAYED'} ? 'Aggiorna risultato' : 'Salva risultato'">
+                        Salva risultato
+                    </button>
+
+                    <a class="btn" th:href="@{/matches/{id}(id=${match.id})}">
+                        Annulla
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

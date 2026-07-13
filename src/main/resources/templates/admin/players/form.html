@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${player.id == null} ? 'Aggiungi Giocatore' : 'Modifica Giocatore'">Giocatore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <h1 th:text="${player.id == null} ? 'Inserisci giocatore' : 'Modifica giocatore'">Inserisci giocatore</h1>
+
+        <form th:action="${player.id == null} ? @{/admin/players} : @{/admin/players/{id}(id=${player.id})}"
+              th:object="${player}"
+              method="post">
+
+            <div class="form-error-box" th:if="${#fields.hasGlobalErrors()}">
+                <p class="error-text"
+                   th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}">
+                    Errore
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Nome</label>
+                <input id="name" type="text" th:field="*{name}" required>
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Errore</div>
+            </div>
+
+            <div class="form-group">
+                <label for="surname">Cognome</label>
+                <input id="surname" type="text" th:field="*{surname}" required>
+                <div class="error" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Errore</div>
+            </div>
+
+            <div class="form-group">
+                <label for="dateOfBirth">Data di nascita</label>
+                <input id="dateOfBirth" type="date" th:field="*{dateOfBirth}" required>
+                <div class="error" th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">Errore</div>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Ruolo</label>
+                <select id="role" th:field="*{role}" required>
+                    <option value="">-- Seleziona ruolo --</option>
+                    <option value="Portiere">Portiere</option>
+                    <option value="Difensore">Difensore</option>
+                    <option value="Centrocampista">Centrocampista</option>
+                    <option value="Attaccante">Attaccante</option>
+                </select>
+                <div class="error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Errore</div>
+            </div>
+
+            <div class="form-group">
+                <label for="height">Altezza (cm)</label>
+                <input id="height" type="number" th:field="*{height}" min="100" max="250" required>
+                <div class="error" th:if="${#fields.hasErrors('height')}" th:errors="*{height}">Errore</div>
+            </div>
+
+            <div class="form-group">
+                <label for="teamId">Squadra</label>
+                <select id="teamId" name="teamId" required>
+                    <option value="">-- Seleziona squadra --</option>
+                    <option th:each="t : ${teams}"
+                            th:value="${t.id}"
+                            th:text="${t.name}"
+                            th:selected="${selectedTeamId != null and selectedTeamId == t.id}">
+                        Squadra
+                    </option>
+                </select>
+            </div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn">Salva giocatore</button>
+				<a th:if="${selectedTeamId != null}"
+				   th:href="@{/admin/teams/{id}/manage(id=${selectedTeamId})}"
+				   class="btn">
+				    Annulla
+				</a>
+            </div>
+        </form>
+    </main>
+</body>
+</html>

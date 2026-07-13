@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Partite</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Elenco Partite</h1>
+            <p>Tutte le partite attualmente presenti nel sistema.</p>
+        </header>
+
+        <div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+            <a th:href="@{/admin/matches/new}" class="btn">+ Crea Nuova Partita</a>
+        </div>
+
+        <section class="team-matches">
+            <h2>Partite</h2>
+
+            <div class="schedule" th:if="${matchesByDate != null and !matchesByDate.isEmpty()}">
+                <section class="schedule-day" th:each="entry : ${matchesByDate}">
+                    <div class="schedule-date"
+                         th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}">
+                        15/07/2026
+                    </div>
+
+                    <div class="schedule-matches">
+                        <div th:each="match : ${entry.value}" class="match-entry">
+                            <div class="match-tournament" th:text="${match.tournament.name}">
+                                Nome Torneo
+                            </div>
+
+                            <a th:href="@{/matches/{id}(id=${match.id})}" class="match-link">
+                                <div class="match-row">
+                                    <div class="home-team" th:text="${match.homeTeam.name}">
+                                        Squadra Casa
+                                    </div>
+
+                                    <div class="match-center"
+                                         th:classappend="${match.status != null and match.status.name() == 'PLAYED'} ? ' played' : ' scheduled'">
+                                        <span th:if="${match.status != null and match.status.name() == 'PLAYED'}"
+                                              th:text="${match.goalsHome + ' - ' + match.goalsAway}">
+                                            2 - 1
+                                        </span>
+                                        <span th:unless="${match.status != null and match.status.name() == 'PLAYED'}"
+                                              th:text="${#temporals.format(match.dateAndTime, 'HH:mm')}">
+                                            18:00
+                                        </span>
+                                    </div>
+
+                                    <div class="away-team" th:text="${match.awayTeam.name}">
+                                        Squadra Trasferta
+                                    </div>
+                                </div>
+                            </a>
+
+                            <div class="match-admin-actions" sec:authorize="hasAuthority('ADMIN')">
+                                <form th:action="@{/admin/matches/{id}/delete(id=${match.id})}"
+                                      method="post"
+                                      class="inline-form"
+                                      onsubmit="return confirm('Sei sicuro di voler eliminare questa partita?');">
+                                    <button type="submit" class="btn btn-danger">
+                                        Elimina
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <p class="schedule-empty" th:if="${matchesByDate == null or matchesByDate.isEmpty()}">
+                Nessuna partita presente nel sistema.
+            </p>
+        </section>
+    </main>
+</body>
+</html>

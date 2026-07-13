@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${tournament.id != null} ? 'Modifica Torneo' : 'Nuovo Torneo'">Gestione Torneo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <h1 th:text="${tournament.id != null} ? 'Modifica torneo' : 'Crea nuovo torneo'">Gestione torneo</h1>
+
+        <p th:if="${errorMessage}" class="error" th:text="${errorMessage}">Errore</p>
+
+        <form th:action="${tournament.id != null} ? @{/admin/tournaments/{id}(id=${tournament.id})} : @{/admin/tournaments}"
+              th:object="${tournament}" method="post">
+
+            <div class="form-group">
+                <label for="name">Nome del torneo</label>
+                <input type="text" id="name" th:field="*{name}" placeholder="Es: Coppa Roma Capitale" required>
+                <div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Errore nome</div>
+            </div>
+
+            <div class="form-group">
+                <label for="year">Anno di svolgimento</label>
+                <input type="number" id="year" th:field="*{year}" placeholder="Es: 2026" min="2000" max="2100" required>
+                <div class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}">Errore anno</div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descrizione</label>
+                <textarea id="description" th:field="*{description}" placeholder="Descrizione del torneo"></textarea>
+                <div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Errore descrizione</div>
+            </div>
+
+            <div class="inline-actions">
+                <button type="submit" class="btn"
+                        th:text="${tournament.id != null} ? 'Aggiorna torneo' : 'Salva torneo'">Salva</button>
+                <a th:href="@{/tournaments}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </main>
+
+</body>
+</html>
