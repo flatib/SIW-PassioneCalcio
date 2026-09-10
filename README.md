@@ -4,6 +4,7 @@ Guardare `analisi_sperimentale_prestazioni.md` per l'analisi prestazionale e del
 ## Istruzioni
 - Clonare il repository
 - Separare la cartella `passionecalcio-react` dal resto del sorgente
+- Modificare eventualmente `src/main/resources/application.properties` da ***create*** a ***update*** per non caricare le entità di test e mantenere le modifiche a ogni riavvio
 - Eseguire il contenuto di `passionecalcio-react` con Vite e il resto come progetto Eclipse/Spring Boot
 
 ## Organizzazione del progetto Eclipse/Spring Boot
