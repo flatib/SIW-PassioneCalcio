@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Giocatori</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Giocatori</h1>
+            <p>Elenco dei giocatori presenti nel sistema.</p>
+        </header>
+
+        <div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+            <a class="btn" th:href="@{/admin/players/new}">Aggiungi giocatore</a>
+        </div>
+
+		<section class="team-players">
+			    <div class="table-wrapper" th:if="${players != null and !players.isEmpty()}">
+			        <table class="players-table">
+			            <thead>
+			                <tr>
+			                    <th>Nome</th>
+			                    <th>Cognome</th>
+			                    <th>Data di nascita</th>
+			                    <th>Ruolo</th>
+			                    <th>Altezza</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr th:each="player : ${players}">
+			                    <td th:text="${player.name}">Nome</td>
+			                    <td th:text="${player.surname}">Cognome</td>
+			                    <td th:text="${player.dateOfBirth}">Data di nascita</td>
+			                    <td>
+			                        <span class="role-badge" th:text="${player.role}">Ruolo</span>
+			                    </td>
+			                    <td th:text="${player.height}">Altezza</td>
+			                </tr>
+			            </tbody>
+			        </table>
+			    </div>
+
+			    <p th:if="${players == null or players.isEmpty()}">
+			        Non ci sono giocatori registrati.
+			    </p>
+			</section>
+    </main>
+
+</body>
+</html>

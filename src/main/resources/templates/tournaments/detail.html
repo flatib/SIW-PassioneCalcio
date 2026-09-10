@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+<head th:replace="~{fragments/navbar :: head-fragment('Dettaglio Torneo')}"></head>
+
+<body>
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<main class="container">
+
+		<div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+			<a class="btn" th:href="@{/admin/tournaments/{id}/manage(id=${tournament.id})}">
+				Gestisci torneo
+			</a>
+		</div>
+
+		<div class="tournament-top-section">
+
+			<div class="tournament-header-left page-header">
+				<h1 th:text="${tournament.name + ' (' + tournament.year + ')'}">Nome Torneo (anno)</h1>
+				<p th:text="${tournament.description}">descrizione</p>
+				<div th:if="${tournament.imageUrl != null}">
+					<img th:src="@{${tournament.imageUrl}}" alt="Immagine Torneo" class="header-img">
+				</div>
+				<div th:if="${tournament.imageUrl == null}">
+					<img src="https://placehold.co/600x350?text=Torneo" alt="Immagine Torneo" class="header-img">
+				</div>
+			</div>
+
+			<div class="tournament-standings-right">
+				<div class="standings-scroll-container" th:if="${standings != null and not #lists.isEmpty(standings)}">
+					<table class="standings-table">
+
+						<thead>
+							<tr>
+								<th>Pos</th>
+								<th>Squadra</th>
+								<th>Pti</th>
+								<th>G</th>
+								<th>V</th>
+								<th>N</th>
+								<th>P</th>
+								<th>GF</th>
+								<th>GS</th>
+								<th>DR</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="row, stat : ${standings}"
+								th:onclick="|window.location.href='@{/teams/{id}(id=${row.team.id})}'|" role="link"
+								tabindex="0">
+								<td class="standing-pos" th:text="${stat.count}">1</td>
+								<td class="standing-team" th:text="${row.team.name}">Squadra</td>
+								<td class="standing-points" th:text="${row.points}">0</td>
+								<td th:text="${row.played}">0</td>
+								<td th:text="${row.won}">0</td>
+								<td th:text="${row.drawn}">0</td>
+								<td th:text="${row.lost}">0</td>
+								<td th:text="${row.goalsFor}">0</td>
+								<td th:text="${row.goalsAgainst}">0</td>
+								<td th:text="${row.goalDifference}">0</td>
+							</tr>
+						</tbody>
+
+					</table>
+				</div>
+				<p th:if="${standings == null or #lists.isEmpty(standings)}" class="empty-list">
+					Classifica non ancora disponibile.
+				</p>
+			</div>
+
+		</div>
+
+		<section class="tournament-teams">
+			<h2>Squadre partecipanti</h2>
+
+			<div class="team-horizontal-scroll">
+				<a th:each="team : ${tournament.teams}" th:href="@{/teams/{id}(id=${team.id})}" class="team-card">
+					<span th:if="${team.imageUrl != null}">
+						<img th:src="@{${team.imageUrl}}" alt="Logo Squadra">
+					</span>
+					<span th:if="${team.imageUrl == null}">
+						<img src="https://placehold.co/100x100?text=Squadra" alt="Logo Squadra">
+					</span>
+					<span class="team-card-name" th:text="${team.name}">Nome Squadra</span>
+					<span class="team-card-city" th:text="${team.city}">Città</span>
+				</a>
+			</div>
+
+			<p th:if="${#lists.isEmpty(tournament.teams)}" class="empty-list">
+				Nessuna squadra ancora iscritta.
+			</p>
+		</section>
+
+		<section class="tournament-schedule">
+			<h2>Calendario</h2>
+
+			<div class="schedule" th:if="${matchesByDate != null and !matchesByDate.isEmpty()}">
+				<section class="schedule-day" th:each="entry : ${matchesByDate}">
+					<div class="schedule-date" th:text="${#temporals.format(entry.key, 'dd/MM/yyyy')}">
+						15/07/2026
+					</div>
+
+					<div class="schedule-matches">
+						<a class="match-link" th:each="match : ${entry.value}"
+							th:href="@{/matches/{id}(id=${match.id})}">
+							<div class="match-row">
+								<div class="home-team" th:text="${match.homeTeam.name}">
+									Squadra Casa
+								</div>
+
+								<div class="match-center"
+									th:classappend="${match.status != null and match.status.name() == 'PLAYED'} ? ' played' : ' scheduled'">
+									<span th:if="${match.status != null and match.status.name() == 'PLAYED'}"
+										th:text="${match.goalsHome + ' - ' + match.goalsAway}">
+										2 - 1
+									</span>
+									<span th:unless="${match.status != null and match.status.name() == 'PLAYED'}"
+										th:text="${#temporals.format(match.dateAndTime, 'HH:mm')}">
+										18:00
+									</span>
+								</div>
+
+								<div class="away-team" th:text="${match.awayTeam.name}">
+									Squadra Trasferta
+								</div>
+							</div>
+						</a>
+					</div>
+				</section>
+			</div>
+
+			<p class="empty-list" th:if="${matchesByDate == null or matchesByDate.isEmpty()}">
+				Nessuna partita in calendario.
+			</p>
+		</section>
+	</main>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Registrazione</title>
+		<link rel="stylesheet" th:href="@{/css/style.css}">
+		<link rel="icon" th:href="@{/images/favicon.ico}" />
+	</head>
+<body>
+	<div class="logo-login-container">
+			<a th:href="@{/}"><img th:src="@{/images/logo.png}" alt="PassioneCalcio logo" class="logo-login"></a>
+		</div>
+<div class="auth-card">
+    <h1>Registrazione</h1>
+	
+	<p>Inserisci le credenziali dell'account da creare</p>
+
+    <form th:action="@{/register}" method="post" th:object="${credentials}">
+        <div class="form-group">
+            <div><label for="username">Username</label></div>
+            <input id="username" type="text" th:field="*{username}" required>
+            <div class="login-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Errore username</div>
+            <div class="login-error" th:if="${errorMessage}">
+                Username già in uso.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div><label for="password">Password</label></div>
+            <input id="password" type="password" th:field="*{password}" required>
+            <div class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Errore password</div>
+        </div>
+
+        <button class="login-btn" type="submit">Registrati</button>
+    </form>
+
+    <p style="margin-top: 16px;">
+        Hai già un account?
+        <a th:href="@{/login}">Accedi</a>
+    </p>
+</div>
+</body>
+</html>

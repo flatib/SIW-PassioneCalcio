@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/navbar :: head-fragment('Passione Calcio - Home')}"></head>
+
+<body>
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<!-- Hero Section -->
+	<header class="hero-section">
+		<div class="container">
+			<h1>Vivi la tua Passione Calcio</h1>
+			<p>Gestisci tornei, scopri le squadre, esplora i giocatori e segui i risultati in tempo reale.</p>
+		</div>
+	</header>
+
+	<!-- Features / Link Rapidi -->
+	<main class="container">
+		<section class="features-grid">
+			<a th:href="@{/tournaments}" class="feature-card has-image">
+				<img th:src="@{/images/tournaments.png}" alt="Tornei" class="feature-bg">
+				<div class="feature-overlay">
+					<h3>Tornei</h3>
+					<p>Esplora le competizioni stagionali, iscrivi le squadre e segui le classifiche in tempo reale.</p>
+				</div>
+			</a>
+
+			<a th:href="@{/teams}" class="feature-card has-image">
+				<img th:src="@{/images/teams.jpg}" alt="Squadre" class="feature-bg">
+				<div class="feature-overlay">
+					<h3>Squadre</h3>
+					<p>Consulta le formazioni, gli stemmi e le statistiche dei club iscritti ai vari campionati.</p>
+				</div>
+			</a>
+
+			<a th:href="@{/players}" class="feature-card has-image">
+				<img th:src="@{/images/players.jpg}" alt="Giocatori" class="feature-bg">
+				<div class="feature-overlay">
+					<h3>Giocatori</h3>
+					<p>Cerca i talenti, analizza i ruoli e scopri i fuoriclasse attualmente svincolati sul mercato.</p>
+				</div>
+			</a>
+
+			<a th:href="@{/matches}" class="feature-card has-image">
+				<img th:src="@{/images/matches.png}" alt="Partite" class="feature-bg">
+				<div class="feature-overlay">
+					<h3>Partite</h3>
+					<p>Tieniti aggiornato sul calendario, sui luoghi degli incontri e sui risultati finali.</p>
+				</div>
+			</a>
+		</section>
+	</main>
+</body>
+
+</html>

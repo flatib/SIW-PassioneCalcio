@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Squadre</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1>Elenco Squadre</h1>
+            <p>Tutte le squadre attualmente presenti nel sistema.</p>
+        </header>
+
+        <div class="inline-actions" sec:authorize="hasAuthority('ADMIN')">
+            <a th:href="@{/admin/teams/new}" class="btn">+ Crea Nuova Squadra</a>
+        </div>
+
+        <div class="table-wrapper" th:if="${teams != null and !teams.isEmpty()}">
+            <table class="teams-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Città</th>
+                        <th>Anno di fondazione</th>
+                        <th>Dettaglio</th>
+                        <th sec:authorize="hasAuthority('ADMIN')">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="team : ${teams}">
+                        <td class="team-name-cell" th:text="${team.name}">Nome Squadra</td>
+                        <td th:text="${team.city}">Roma</td>
+                        <td th:text="${team.foundationYear}">2001</td>
+                        <td>
+                            <a th:href="@{/teams/{id}(id=${team.id})}" class="btn">
+                                Visualizza
+                            </a>
+                        </td>
+                        <td sec:authorize="hasAuthority('ADMIN')">
+                            <form th:action="@{/admin/teams/{id}/delete(id=${team.id})}"
+                                  method="post"
+                                  class="inline-form"
+                                  onsubmit="return confirm('Sei sicuro di voler eliminare questa squadra?');">
+                                <button type="submit" class="btn btn-danger">
+                                    Elimina
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p th:if="${teams == null or teams.isEmpty()}">
+            Nessuna squadra presente nel sistema.
+        </p>
+    </main>
+</body>
+</html>

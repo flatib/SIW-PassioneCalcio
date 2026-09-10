@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+	
+<head th:replace="~{fragments/navbar :: head-fragment(${tournament.id != null} ? 'Modifica Torneo' : 'Nuovo Torneo')}"></head>
+
+<body>
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<main class="container">
+		<div class="form-container">
+			<div class="form-input">
+				<h1 th:text="${tournament.id != null} ? 'Modifica torneo' : 'Crea nuovo torneo'">Gestione torneo</h1>
+
+				<form th:object="${tournament}"
+					th:action="${tournament.id != null} ? @{/admin/tournaments/{id}(id=${tournament.id})} : @{/admin/tournaments}"
+					method="post" enctype="multipart/form-data">
+
+					<div th:if="${#fields.hasGlobalErrors()}">
+						<p class="error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">
+							Errore globale
+						</p>
+					</div>
+
+					<div class="form-group">
+						<div><label for="name">Nome del torneo</label></div>
+						<input type="text" id="name" th:field="*{name}" placeholder="Es: Coppa Roma Capitale" required>
+						<div class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Errore nome</div>
+					</div>
+
+					<div class="form-group">
+						<div><label for="year">Anno di svolgimento</label></div>
+						<input type="number" id="year" th:field="*{year}" placeholder="Es: 2026" min="2000" max="2100"
+							required>
+						<div class="error" th:if="${#fields.hasErrors('year')}" th:errors="*{year}">Errore anno</div>
+					</div>
+
+					<div class="form-group">
+						<div><label for="description">Descrizione</label></div>
+						<textarea id="description" th:field="*{description}"
+							placeholder="Descrizione del torneo"></textarea>
+						<div class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Errore
+							descrizione</div>
+					</div>
+
+					<div class="form-group">
+						<label for="immagineFile">Locandina o logo del torneo</label>
+						<input type="file" id="immagineFile" name="immagineFile" accept="image/*">
+						<p id="erroreDimensioneImmagine" th:text="${erroreImmagine}"
+							th:style="${erroreImmagine != null} ? 'display:block; color:red;' : 'display:none; color:red;'">
+						</p>
+					</div>
+			</div>
+
+			<div class="img-preview-container">
+				<div th:if="${formMode == 'edit' and tournament.image != null}" class="img-preview">
+					<p>Immagine attuale:</p>
+					<img th:src="@{/rest/tournaments/{id}/image(id=${tournament.id})}"
+						th:alt="'Immagine attuale del torneo ' + ${tournament.name}" class="img-form">
+				</div>
+				<div id="contenitoreAnteprima" class="img-preview" style="display: none;">
+					<p>Nuova immagine selezionata:</p>
+					<img id="anteprimaImmagine" alt="Anteprima della nuova immagine" class="img-form">
+				</div>
+			</div>
+		</div>
+
+		<div class="inline-actions">
+			<button type="submit" class="confirm-btn"
+				th:text="${tournament.id != null} ? 'Aggiorna' : 'Salva'">Salva</button>
+			<a href="javascript:history.back()" class="cancel-btn">Annulla</a>
+		</div>
+		</form>
+	</main>
+
+</body>
+
+<script>
+	const dimensioneMassimaImmagine = 5 * 1024 * 1024;
+	const formTorneo = document.querySelector("form");
+	const inputImmagine = document.getElementById("immagineFile");
+	const erroreImmagine = document.getElementById("erroreDimensioneImmagine");
+	const contenitoreAnteprima = document.getElementById("contenitoreAnteprima");
+	const anteprimaImmagine = document.getElementById("anteprimaImmagine");
+	let urlAnteprima = null;
+
+	function nascondiAnteprima() {
+		contenitoreAnteprima.style.display = "none";
+		anteprimaImmagine.removeAttribute("src");
+		if (urlAnteprima !== null) {
+			URL.revokeObjectURL(urlAnteprima);
+			urlAnteprima = null;
+		}
+	}
+
+	function mostraAnteprima(file) {
+		if (urlAnteprima !== null) {
+			URL.revokeObjectURL(urlAnteprima);
+		}
+		urlAnteprima = URL.createObjectURL(file);
+		anteprimaImmagine.src = urlAnteprima;
+		contenitoreAnteprima.style.display = "block";
+	}
+
+	function controllaImmagine() {
+		const file = inputImmagine.files[0];
+		if (!file) {
+			erroreImmagine.textContent = "";
+			erroreImmagine.style.display = "none";
+			inputImmagine.setCustomValidity("");
+			nascondiAnteprima();
+			return true;
+		}
+		if (!file.type.startsWith("image/")) {
+			erroreImmagine.textContent = "Il file selezionato non è un'immagine valida.";
+			erroreImmagine.style.display = "block";
+			inputImmagine.setCustomValidity("Seleziona un file immagine valido.");
+			nascondiAnteprima();
+			return false;
+		}
+		if (file.size > dimensioneMassimaImmagine) {
+			erroreImmagine.textContent = "L'immagine selezionata supera la dimensione massima di 5 MB.";
+			erroreImmagine.style.display = "block";
+			inputImmagine.setCustomValidity("L'immagine non può superare i 5 MB.");
+			nascondiAnteprima();
+			return false;
+		}
+		erroreImmagine.textContent = "";
+		erroreImmagine.style.display = "none";
+		inputImmagine.setCustomValidity("");
+		mostraAnteprima(file);
+		return true;
+	}
+
+	inputImmagine.addEventListener("change", controllaImmagine);
+
+	formTorneo.addEventListener("submit", function (event) {
+		if (!controllaImmagine()) {
+			event.preventDefault();
+			inputImmagine.focus();
+		}
+	});
+
+	window.addEventListener("beforeunload", function () {
+		if (urlAnteprima !== null) {
+			URL.revokeObjectURL(urlAnteprima);
+		}
+	});
+</script>
+
+</html>

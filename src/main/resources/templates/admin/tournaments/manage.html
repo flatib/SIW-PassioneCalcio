@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+	
+<head th:replace="~{fragments/navbar :: head-fragment('Gestione torneo - ' + ${tournament.name})}"></head>
+
+<body>
+
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<main class="container">
+		<header class="page-header">
+			<h1>Gestione torneo</h1>
+			<p th:text="${tournament.name} + ' (' + ${tournament.year} + ')'">Nome torneo (anno)</p>
+			<div class="inline-actions">
+				<a class="btn" th:href="@{/admin/tournaments/{id}/edit(id=${tournament.id})}">
+					Modifica informazioni
+				</a>
+				<a class="btn" th:href="@{/tournaments/{id}(id=${tournament.id})}">
+					Torna al dettaglio
+				</a>
+			</div>
+		</header>
+
+		<section class="info">
+			<h2>Informazioni torneo</h2>
+			<table>
+				<tr>
+					<th>Nome</th>
+					<td th:text="${tournament.name}">Nome</td>
+				</tr>
+				<tr>
+					<th>Edizione</th>
+					<td th:text="${tournament.year}">Anno</td>
+				</tr>
+				<tr>
+					<th>Descrizione</th>
+					<td th:text="${tournament.description}">Descrizione</td>
+				</tr>
+			</table>
+		</section>
+
+		<section class="tournament-teams">
+			<h2>Squadre partecipanti</h2>
+
+			<div class="inline-actions" th:if="${availableTeams != null and !availableTeams.isEmpty()}">
+				<form th:action="@{/admin/tournaments/{id}/teams(id=${tournament.id})}" method="post"
+					class="inline-form">
+					<div class="form-group" style="display:inline-block; margin-right:10px;">
+						<select name="teamId" required>
+							<option value="">-- Seleziona squadra da iscrivere --</option>
+							<option th:each="team : ${availableTeams}" th:value="${team.id}" th:text="${team.name}">
+							</option>
+						</select>
+					</div>
+					<button type="submit" class="btn">Iscrivi squadra</button>
+				</form>
+			</div>
+
+			<div class="table-wrapper" th:if="${not #lists.isEmpty(tournament.teams)}">
+				<table class="teams-table">
+					<thead>
+						<tr>
+							<th>Nome</th>
+							<th>Città</th>
+							<th>Azioni</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="team : ${tournament.teams}">
+							<td class="team-name-cell" th:text="${team.name}">Nome</td>
+							<td th:text="${team.city}">Città</td>
+							<td>
+								<form
+									th:action="@{/admin/tournaments/{id}/teams/{teamId}/remove(id=${tournament.id}, teamId=${team.id})}"
+									method="post" class="inline-form">
+									<button type="submit" class="btn btn-danger">Rimuovi</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p th:if="${#lists.isEmpty(tournament.teams)}" class="empty-list">Nessuna squadra partecipante.</p>
+		</section>
+
+		<section class="tournament-schedule">
+			<h2>Calendario e Risultati</h2>
+
+			<div class="inline-actions">
+				<a class="btn" th:href="@{/admin/matches/new(tournamentId=${tournament.id})}">
+					+ Nuova partita
+				</a>
+			</div>
+
+			<div class="table-wrapper" th:if="${not #lists.isEmpty(tournament.matches)}">
+				<table class="teams-table">
+					<thead>
+						<tr>
+							<th>Data e Ora</th>
+							<th>Partita</th>
+							<th>Risultato</th>
+							<th>Azioni</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="match : ${tournament.matches}">
+							<td th:text="${#temporals.format(match.dateAndTime, 'dd/MM/yyyy HH:mm')}">Data</td>
+							<td class="team-name-cell" th:text="${match.homeTeam.name + ' - ' + match.awayTeam.name}">
+								Partita</td>
+							<td
+								th:text="${match.status.name() == 'PLAYED' ? match.goalsHome + ' - ' + match.goalsAway : 'Da disputare'}">
+								Risultato</td>
+							<td>
+								<div>
+									<a th:href="@{/admin/matches/{id}/result(id=${match.id})}" class="btn" style="margin-right: 10px;">
+										Gestisci Risultato</a>
+									<form th:action="@{/admin/matches/{id}/delete(id=${match.id})}" method="post"
+										class="inline-form"
+										onsubmit="return confirm('Sei sicuro di voler eliminare questa partita?');">
+										<button type="submit" class="btn btn-danger">Elimina</button>
+									</form>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p th:if="${#lists.isEmpty(tournament.matches)}" class="empty-list">Nessuna partita in calendario.</p>
+		</section>
+	</main>
+
+</body>
+
+</html>

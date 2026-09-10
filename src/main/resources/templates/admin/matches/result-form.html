@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+	
+<head th:replace="~{fragments/navbar :: head-fragment('Imposta risultato partita')}"></head>
+
+<body>
+	<nav th:replace="~{fragments/navbar :: main-nav}"></nav>
+
+	<main class="container">
+
+		<section class="card">
+			<h1>Imposta risultato</h1>
+
+			<p th:text="${match.tournament.name + ' - ' + #temporals.format(match.dateAndTime, 'dd/MM/yyyy HH:mm')}">
+				Torneo e data
+			</p>
+
+			<p th:text="${'Luogo: ' + match.place}">Luogo</p>
+
+			<div class="form-error-box" th:if="${resultError != null}">
+				<p class="error-text" th:text="${resultError}">Messaggio di errore</p>
+			</div>
+
+			<form th:action="@{/admin/matches/{id}/result(id=${match.id})}" method="post" class="form-card">
+
+				<div
+					style="display: flex; align-items: flex-end; justify-content: center; gap: 20px; margin-bottom: 30px; margin-top: 10px;">
+
+					<div style="text-align: right; flex: 1;">
+						<label class="team-label" for="goalsHome" th:text="${match.homeTeam.name}">Casa</label>
+						<input class="goal-input" id="goalsHome" name="goalsHome" type="number" min="0" required th:value="${match.goalsHome}">
+					</div>
+
+					<div class="match-center" th:classappend="${match.status != null and match.status.name() == 'PLAYED'} ? ' played' : ' scheduled'">
+						<span th:if="${match.status != null and match.status.name() == 'PLAYED'}">-</span>
+						<span th:unless="${match.status != null and match.status.name() == 'PLAYED'}">VS</span>
+					</div>
+
+					<div style="text-align: left; flex: 1;">
+						<label class="team-label" for="goalsAway" th:text="${match.awayTeam.name}">Trasferta</label>
+						<input class="goal-input" id="goalsAway" name="goalsAway" type="number" min="0" required th:value="${match.goalsAway}">
+					</div>
+				</div>
+
+				<div class="inline-actions" style="justify-content: center;">
+					<button type="submit" class="confirm-btn" style="width: auto; margin-top: 0;"
+						th:text="${match.status != null and match.status.name() == 'PLAYED'} ? 'Aggiorna risultato' : 'Salva risultato'">
+						Salva risultato
+					</button>
+					<a class="cancel-btn" style="width: auto; margin-top: 0; display: inline-flex; align-items: center;"
+						href="javascript:history.back()">
+						Annulla
+					</a>
+				</div>
+			</form>
+		</section>
+	</main>
+</body>
+
+</html>
